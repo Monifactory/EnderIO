@@ -3,7 +3,7 @@ package com.enderio.armory.common.item.darksteel;
 import com.enderio.armory.common.init.ArmoryItems;
 import com.enderio.armory.common.lang.ArmoryLang;
 import com.enderio.base.common.init.EIOBlocks;
-import com.enderio.core.client.item.IAdvancedTooltipProvider;
+import com.enderio.core.client.item.AdvancedTooltipProvider;
 import com.enderio.core.common.util.TooltipUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class DarkSteelSwordItem extends SwordItem implements IAdvancedTooltipProvider {
+public class DarkSteelSwordItem extends SwordItem implements AdvancedTooltipProvider {
     public DarkSteelSwordItem(Properties pProperties) {
         super(ArmoryItems.DARK_STEEL_TIER, 3, -2.4F, pProperties);
     }

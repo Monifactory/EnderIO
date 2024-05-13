@@ -1,7 +1,7 @@
 package com.enderio.machines.client.gui.screen;
 
 import com.enderio.EnderIO;
-import com.enderio.api.grindingball.IGrindingBallData;
+import com.enderio.api.grindingball.GrindingBallData;
 import com.enderio.api.misc.Vector2i;
 import com.enderio.base.common.lang.EIOLang;
 import com.enderio.core.client.gui.widgets.EnumIconWidget;
@@ -83,7 +83,7 @@ public class SagMillScreen extends MachineScreen<SagMillMenu> {
         public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
 
         @Nullable
-        private IGrindingBallData tooltipDataCache;
+        private GrindingBallData tooltipDataCache;
         private float tooltipDuraCache;
 
         @Override
@@ -94,7 +94,7 @@ public class SagMillScreen extends MachineScreen<SagMillMenu> {
             }
 
             float durability = be.getGrindingBallDamage();
-            IGrindingBallData data = be.getGrindingBallData();
+            GrindingBallData data = be.getGrindingBallData();
 
             int yOffset = (int) Math.ceil(this.height * (1.0f - durability));
             int height = (int) Math.ceil(this.height * durability);

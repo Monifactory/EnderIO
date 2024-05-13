@@ -1,12 +1,12 @@
 package com.enderio.machines.common.blockentity.base;
 
-import com.enderio.api.capacitor.ICapacitorData;
-import com.enderio.api.capacitor.ICapacitorScalable;
+import com.enderio.api.capacitor.CapacitorData;
+import com.enderio.api.capacitor.CapacitorScalable;
 import com.enderio.api.io.energy.EnergyIOMode;
-import com.enderio.base.common.blockentity.IMachineInstall;
+import com.enderio.base.common.blockentity.MachineInstallable;
 import com.enderio.base.common.capacitor.CapacitorUtil;
 import com.enderio.base.common.capacitor.DefaultCapacitorData;
-import com.enderio.base.common.item.capacitors.BaseCapacitorItem;
+import com.enderio.base.common.item.capacitors.CapacitorItem;
 import com.enderio.core.common.network.slot.NetworkDataSlot;
 import com.enderio.machines.common.MachineNBTKeys;
 import com.enderio.machines.common.block.ProgressMachineBlock;
@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 /**
  * A machine that stores energy.
  */
-public abstract class PoweredMachineBlockEntity extends MachineBlockEntity implements IMachineInstall {
+public abstract class PoweredMachineBlockEntity extends MachineBlockEntity implements MachineInstallable {
     /**
      * The energy storage medium for the block entity.
      * This will be a mutable energy storage.
@@ -51,11 +51,11 @@ public abstract class PoweredMachineBlockEntity extends MachineBlockEntity imple
      */
     protected IMachineEnergyStorage clientEnergyStorage = ImmutableMachineEnergyStorage.EMPTY;
 
-    private ICapacitorData cachedCapacitorData = DefaultCapacitorData.NONE;
+    private CapacitorData cachedCapacitorData = DefaultCapacitorData.NONE;
     private boolean capacitorCacheDirty;
     private boolean updateModel = false;
 
-    public PoweredMachineBlockEntity(EnergyIOMode energyIOMode, ICapacitorScalable capacity, ICapacitorScalable usageRate, BlockEntityType<?> type, BlockPos worldPosition, BlockState blockState) {
+    public PoweredMachineBlockEntity(EnergyIOMode energyIOMode, CapacitorScalable capacity, CapacitorScalable usageRate, BlockEntityType<?> type, BlockPos worldPosition, BlockState blockState) {
         super(type, worldPosition, blockState);
 
         // Create energy storage
@@ -229,7 +229,7 @@ public abstract class PoweredMachineBlockEntity extends MachineBlockEntity imple
      */
     @Override
     public InteractionResult tryItemInstall(ItemStack stack, UseOnContext context) {
-        if (stack.getItem() instanceof BaseCapacitorItem && requiresCapacitor() && !isCapacitorInstalled()) {
+        if (stack.getItem() instanceof CapacitorItem && requiresCapacitor() && !isCapacitorInstalled()) {
             MachineInventory inventory = getInventory();
             MachineInventoryLayout layout = getInventoryLayout();
             if (inventory != null && layout != null) {
@@ -291,7 +291,7 @@ public abstract class PoweredMachineBlockEntity extends MachineBlockEntity imple
     /**
      * Get the capacitor data for the machine.
      */
-    public ICapacitorData getCapacitorData() {
+    public CapacitorData getCapacitorData() {
         if (capacitorCacheDirty) {
             cacheCapacitorData();
         }

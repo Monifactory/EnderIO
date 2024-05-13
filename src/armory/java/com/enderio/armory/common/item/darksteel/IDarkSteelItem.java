@@ -9,7 +9,7 @@ import com.enderio.armory.common.capability.EnergyDelegator;
 import com.enderio.armory.common.lang.ArmoryLang;
 import com.enderio.base.common.init.EIOCapabilities;
 import com.enderio.base.common.lang.EIOLang;
-import com.enderio.core.client.item.IAdvancedTooltipProvider;
+import com.enderio.core.client.item.AdvancedTooltipProvider;
 import com.enderio.core.common.item.ITabVariants;
 import com.enderio.core.common.util.EnergyUtil;
 import com.enderio.core.common.util.TooltipUtil;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public interface IDarkSteelItem extends IMultiCapabilityItem, IAdvancedTooltipProvider, ITabVariants {
+public interface IDarkSteelItem extends IMultiCapabilityItem, AdvancedTooltipProvider, ITabVariants {
 
     default Optional<EmpoweredUpgrade> getEmpoweredUpgrade(ItemStack stack) {
         return DarkSteelUpgradeable.getUpgradeAs(stack, EmpoweredUpgrade.NAME, EmpoweredUpgrade.class);

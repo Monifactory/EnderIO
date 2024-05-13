@@ -11,7 +11,7 @@ import com.enderio.machines.common.integrations.jei.util.MachineRecipeCategory;
 import com.enderio.machines.common.integrations.jei.util.RecipeUtil;
 import com.enderio.machines.common.lang.MachineLang;
 import com.enderio.machines.common.recipe.SoulBindingRecipe;
-import com.enderio.machines.common.souldata.ISoulData;
+import com.enderio.machines.common.souldata.SoulData;
 import com.enderio.machines.common.souldata.SoulDataReloadListener;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -101,7 +101,7 @@ public class SoulBindingCategory extends MachineRecipeCategory<SoulBindingRecipe
                     vials.add(item);
                 });
             } else {
-                SoulDataReloadListener<? extends ISoulData> soulDataReloadListener = SoulDataReloadListener.fromString(recipe.getSouldata());
+                SoulDataReloadListener<? extends SoulData> soulDataReloadListener = SoulDataReloadListener.fromString(recipe.getSouldata());
 
                 var allEntitiesOfSoulData = ForgeRegistries.ENTITY_TYPES.getKeys().stream()
                     .filter(r -> soulDataReloadListener.map.containsKey(r))

@@ -184,7 +184,7 @@ public class IOConfigWidget<U extends EIOScreen<?>> extends AbstractWidget {
                     var selectedFace = selection.get();
                     BlockEntity entity = MINECRAFT.level.getBlockEntity(selectedFace.blockPos);
                     if (entity instanceof MachineBlockEntity machine) {
-                        machine.getIOConfig().cycleMode(selectedFace.side);
+                        machine.getIOConfig().cycleIOMode(selectedFace.side);
                         this.playDownSound(Minecraft.getInstance().getSoundManager());
                         return true;
                     }
@@ -381,7 +381,7 @@ public class IOConfigWidget<U extends EIOScreen<?>> extends AbstractWidget {
             var selectedFace = selection.get();
             BlockEntity entity = MINECRAFT.level.getBlockEntity(selectedFace.blockPos);
             if (entity instanceof MachineBlockEntity machine) {
-                var ioMode = machine.getIOConfig().getMode(selectedFace.side);
+                var ioMode = machine.getIOConfig().getIOMode(selectedFace.side);
                 IOModeMap map = IOModeMap.getMapFromMode(ioMode);
                 Rect2i iconBounds = map.getRect();
                 guiGraphics.blit(IOConfigButton.IOCONFIG, getX() + 4, getY() + height - 4 - screenFont.lineHeight - iconBounds.getHeight(), iconBounds.getX(), iconBounds.getY(),

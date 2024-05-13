@@ -2,7 +2,7 @@ package com.enderio.machines.common.block;
 
 import com.enderio.EnderIO;
 import com.enderio.base.common.lang.EIOLang;
-import com.enderio.core.client.item.IAdvancedTooltipProvider;
+import com.enderio.core.client.item.AdvancedTooltipProvider;
 import com.enderio.core.common.util.EnergyUtil;
 import com.enderio.core.common.util.TooltipUtil;
 import com.enderio.machines.common.blockentity.base.MachineBlockEntity;
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @Mod.EventBusSubscriber
-public class CapacitorBankBlock extends MachineBlock implements IAdvancedTooltipProvider {
+public class CapacitorBankBlock extends MachineBlock implements AdvancedTooltipProvider {
 
     public ICapacityTier getTier() {
         return tier;

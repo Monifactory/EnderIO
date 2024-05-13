@@ -79,7 +79,7 @@ public class IOOverlayBakedModel implements IDynamicBakedModel {
 
                 // Get all states for each direction. If its not "None" then we render an overlay quad.
                 for (Direction dir : Direction.values()) {
-                    IOMode mode = config.getMode(dir);
+                    IOMode mode = config.getIOMode(dir);
                     if (mode != IOMode.NONE) {
                         Vec3[] verts = QUADS.get(dir);
                         quads.add(ModelRenderUtil.createQuad(verts, getTexture(mode)));

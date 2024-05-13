@@ -47,7 +47,12 @@ public abstract class SyncedMenu<T extends EnderBlockEntity> extends AbstractCon
 
         // Hotbar
         for (int x = 0; x < 9; x++) {
-            Slot ref = new Slot(inventory, x, xPos + x * 18, yPos + 58);
+            Slot ref = new Slot(inventory, x, xPos + x * 18, yPos + 58) {
+                @Override
+                public boolean isActive() {
+                    return playerInvVisible;
+                }
+            };
             playerInventorySlots.add(ref);
             this.addSlot(ref);
         }

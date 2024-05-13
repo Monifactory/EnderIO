@@ -80,7 +80,7 @@ public class MachineInventory extends ItemStackHandler implements IEnderCapabili
             return selfCache.cast();
         }
 
-        if (!config.getMode(side).canConnect()) {
+        if (!config.getIOMode(side).canConnect()) {
             return LazyOptional.empty();
         }
 
@@ -160,7 +160,7 @@ public class MachineInventory extends ItemStackHandler implements IEnderCapabili
             }
 
             // Check we allow input to the block on this side
-            if (side != null && !master.getConfig().getMode(side).canInput()) {
+            if (side != null && !master.getConfig().getIOMode(side).canInput()) {
                 return stack;
             }
 
@@ -175,7 +175,7 @@ public class MachineInventory extends ItemStackHandler implements IEnderCapabili
             }
 
             // Check we allow output from the block on this side
-            if (side != null && !master.getConfig().getMode(side).canOutput()) {
+            if (side != null && !master.getConfig().getIOMode(side).canOutput()) {
                 return ItemStack.EMPTY;
             }
 

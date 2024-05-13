@@ -28,9 +28,15 @@ public class TagUtil {
         }
 
         ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(tagKey);
+        if (tag.isEmpty()) {
+            return Optional.empty();
+        }
 
         // Search for an EnderIO item
-        Optional<Item> enderItem = tag.stream().filter(item -> ForgeRegistries.ITEMS.getKey(item).getNamespace().equals(EnderCore.MODID)).findFirst();
+        Optional<Item> enderItem = tag.stream()
+            .filter(item -> ForgeRegistries.ITEMS.getKey(item).getNamespace().equals(EnderCore.MODID))
+            .findFirst();
+
         if (enderItem.isPresent()) {
             return enderItem;
         }

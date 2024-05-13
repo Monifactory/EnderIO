@@ -7,7 +7,7 @@ import com.enderio.base.common.config.BaseConfig;
 import com.enderio.base.common.handler.TravelHandler;
 import com.enderio.base.common.lang.EIOLang;
 import com.enderio.core.client.item.EnergyBarDecorator;
-import com.enderio.core.client.item.IAdvancedTooltipProvider;
+import com.enderio.core.client.item.AdvancedTooltipProvider;
 import com.enderio.core.common.item.ITabVariants;
 import com.enderio.core.common.util.EnergyUtil;
 import com.enderio.core.common.util.TooltipUtil;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class TravelStaffItem extends Item implements IMultiCapabilityItem, IAdvancedTooltipProvider, ITabVariants {
+public class TravelStaffItem extends Item implements IMultiCapabilityItem, AdvancedTooltipProvider, ITabVariants {
     public TravelStaffItem(Properties properties) {
         super(properties);
     }

@@ -5,24 +5,23 @@ import com.enderio.api.misc.Vector2i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.LogicalSide;
 
-public abstract class TieredConduit<T extends IExtendedConduitData<T>> implements IConduitType<T> {
+public abstract class TieredConduit<T extends ExtendedConduitData<T>> implements ConduitType<T> {
     private final ResourceLocation texture;
     private final ResourceLocation type;
     private final int tier;
 
-    @UseOnly(LogicalSide.CLIENT) protected IClientConduitData<T> clientConduitData;
+    @UseOnly(LogicalSide.CLIENT) protected ClientConduitData<T> clientConduitData;
 
     /**
      * @param texture
      * @param type
      * @param tier    The tier of the conduit. For Energy this should be it's transfer rate to easily add and compare conduit strength
      */
-
     public TieredConduit(ResourceLocation texture, ResourceLocation type, int tier, ResourceLocation iconTexture, Vector2i iconTexturePos) {
         this.texture = texture;
         this.type = type;
         this.tier = tier;
-        clientConduitData = new IClientConduitData.Simple<>(iconTexture, iconTexturePos);
+        clientConduitData = new ClientConduitData.Simple<>(iconTexture, iconTexturePos);
     }
 
     @Override
@@ -35,9 +34,8 @@ public abstract class TieredConduit<T extends IExtendedConduitData<T>> implement
         return texture;
     }
 
-
     @Override
-    public boolean canBeReplacedBy(IConduitType<?> other) {
+    public boolean canBeReplacedBy(ConduitType<?> other) {
         if (!(other instanceof TieredConduit<?> tieredOther)) {
             return false;
         }
@@ -45,11 +43,12 @@ public abstract class TieredConduit<T extends IExtendedConduitData<T>> implement
         if (type.equals(tieredOther.getType())) {
             return tier < tieredOther.getTier();
         }
+
         return false;
     }
 
     @Override
-    public boolean canBeInSameBlock(IConduitType<?> other) {
+    public boolean canBeInSameBlock(ConduitType<?> other) {
         if (!(other instanceof TieredConduit<?> tieredOther)) {
             return true;
         }
@@ -67,7 +66,7 @@ public abstract class TieredConduit<T extends IExtendedConduitData<T>> implement
     }
 
     @Override
-    public IClientConduitData<T> getClientData() {
+    public ClientConduitData<T> getClientData() {
         return clientConduitData;
     }
 }

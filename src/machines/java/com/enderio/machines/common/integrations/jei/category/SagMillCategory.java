@@ -1,7 +1,7 @@
 package com.enderio.machines.common.integrations.jei.category;
 
 import com.enderio.EnderIO;
-import com.enderio.api.grindingball.IGrindingBallData;
+import com.enderio.api.grindingball.GrindingBallData;
 import com.enderio.base.common.lang.EIOLang;
 import com.enderio.base.common.util.GrindingBallManager;
 import com.enderio.core.common.util.TooltipUtil;
@@ -132,6 +132,6 @@ public class SagMillCategory extends MachineRecipeCategory<SagMillingRecipe> {
         return TooltipUtil.withArgs(EIOLang.ENERGY_AMOUNT, NumberFormat
             .getIntegerInstance(Locale.ENGLISH)
             .format(recipe.getEnergyCost(
-                recipeSlotsView.getSlotViews().get(1).getDisplayedItemStack().map(GrindingBallManager::getData).orElse(IGrindingBallData.IDENTITY))));
+                recipeSlotsView.getSlotViews().get(1).getDisplayedItemStack().map(GrindingBallManager::getData).orElse(GrindingBallData.IDENTITY))));
     }
 }

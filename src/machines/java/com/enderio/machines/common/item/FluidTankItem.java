@@ -1,7 +1,7 @@
 package com.enderio.machines.common.item;
 
 import com.enderio.base.common.lang.EIOLang;
-import com.enderio.core.client.item.IAdvancedTooltipProvider;
+import com.enderio.core.client.item.AdvancedTooltipProvider;
 import com.enderio.core.common.util.TooltipUtil;
 import com.enderio.machines.client.rendering.item.FluidTankBEWLR;
 import com.enderio.machines.common.MachineNBTKeys;
@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -25,13 +26,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class FluidTankItem extends BlockItem implements IAdvancedTooltipProvider {
+public class FluidTankItem extends BlockItem implements AdvancedTooltipProvider {
 
     protected final int capacity;
 
     public FluidTankItem(MachineBlock block, Properties properties, int capacity) {
         super(block, properties);
         this.capacity = capacity;
+    }
+
+    public int getCapacity() {
+        return capacity;
     }
 
     @Override
@@ -43,7 +48,7 @@ public class FluidTankItem extends BlockItem implements IAdvancedTooltipProvider
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             // Minecraft can be null during datagen
-            final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(() -> FluidTankBEWLR.INSTANCE);
+            final Lazy<BlockEntityWithoutLevelRenderer> renderer = Lazy.of(() -> FluidTankBEWLR.INSTANCE);
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {

@@ -20,7 +20,7 @@ public class SpawnerSoul {
      * @param power powercost of the spawner
      * @param spawnType way to spawn the mob
      */
-    public record SoulData(ResourceLocation entitytype, int power, SpawnerMachineTask.SpawnType spawnType) implements ISoulData {
+    public record SoulData(ResourceLocation entitytype, int power, SpawnerMachineTask.SpawnType spawnType) implements com.enderio.machines.common.souldata.SoulData {
         @Override
         public ResourceLocation getKey() {
             return entitytype();
@@ -31,10 +31,10 @@ public class SpawnerSoul {
      * Codec for the spawner data
      */
     public static final Codec<SoulData> CODEC = RecordCodecBuilder.create(soulDataInstance ->
-        soulDataInstance.group(ResourceLocation.CODEC.fieldOf("entity").forGetter(SoulData::entitytype),
-            Codec.INT.fieldOf("power").forGetter(SoulData::power),
-            Codec.STRING.comapFlatMap(SpawnerMachineTask.SpawnType::byName, SpawnerMachineTask.SpawnType::getName).stable().fieldOf("type").forGetter(SoulData::spawnType))
-            .apply(soulDataInstance, SoulData::new));
+        soulDataInstance.group(ResourceLocation.CODEC.fieldOf("entity").forGetter(SpawnerSoul.SoulData::entitytype),
+            Codec.INT.fieldOf("power").forGetter(SpawnerSoul.SoulData::power),
+            Codec.STRING.comapFlatMap(SpawnerMachineTask.SpawnType::byName, SpawnerMachineTask.SpawnType::getName).stable().fieldOf("type").forGetter(SpawnerSoul.SoulData::spawnType))
+            .apply(soulDataInstance, SpawnerSoul.SoulData::new));
 
     public static final String NAME = "spawner";
     //SoulData Manger for the spawner data
