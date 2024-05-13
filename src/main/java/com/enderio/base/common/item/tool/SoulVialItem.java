@@ -10,8 +10,7 @@ import com.enderio.base.common.init.EIOCapabilities;
 import com.enderio.base.common.init.EIOItems;
 import com.enderio.base.common.lang.EIOLang;
 import com.enderio.base.common.util.EntityCaptureUtils;
-import com.enderio.core.client.item.IAdvancedTooltipProvider;
-import com.enderio.core.common.util.EntityUtil;
+import com.enderio.core.client.item.AdvancedTooltipProvider;
 import com.enderio.core.common.util.TooltipUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
@@ -51,7 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = EnderIO.MODID)
-public class SoulVialItem extends Item implements IMultiCapabilityItem, IAdvancedTooltipProvider {
+public class SoulVialItem extends Item implements IMultiCapabilityItem, AdvancedTooltipProvider {
     public SoulVialItem(Properties pProperties) {
         super(pProperties);
     }
@@ -61,16 +60,6 @@ public class SoulVialItem extends Item implements IMultiCapabilityItem, IAdvance
     @Override
     public boolean isFoil(ItemStack pStack) {
         return pStack.getCapability(EIOCapabilities.ENTITY_STORAGE).map(IEntityStorage::hasStoredEntity).orElse(false);
-    }
-
-    @Override
-    public void addCommonTooltips(ItemStack itemStack, @Nullable Player player, List<Component> tooltips) {
-        itemStack
-            .getCapability(EIOCapabilities.ENTITY_STORAGE)
-            .ifPresent(entityStorage -> entityStorage
-                .getStoredEntityData()
-                .getEntityType()
-                .ifPresent(entityType -> tooltips.add(TooltipUtil.style(Component.translatable(EntityUtil.getEntityDescriptionId(entityType))))));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.enderio.conduits.client;
 
 import com.enderio.EnderIO;
-import com.enderio.api.conduit.ConduitTypes;
+import com.enderio.api.conduit.ConduitRegistries;
 import com.enderio.api.misc.ColorControl;
 import com.enderio.conduits.client.model.ConduitGeometry;
 import com.enderio.conduits.common.init.ConduitBlocks;
@@ -54,7 +54,7 @@ public class ConduitClientSetup {
         for (ResourceLocation model : MODEL_LOCATIONS) {
             event.register(model);
         }
-        ConduitTypes.getRegistry().getValues().stream().flatMap(type -> type.getClientData().modelsToLoad().stream()).forEach(event::register);
+        ConduitRegistries.getRegistry().getValues().stream().flatMap(type -> type.getClientData().modelsToLoad().stream()).forEach(event::register);
     }
 
     @SubscribeEvent

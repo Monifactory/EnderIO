@@ -1,12 +1,11 @@
 package com.enderio.machines.common.io;
 
-import com.enderio.api.capability.ISideConfig;
+import com.enderio.api.capability.SideConfig;
 import com.enderio.api.io.IIOConfig;
 import com.enderio.api.io.IOMode;
 import com.enderio.base.common.init.EIOCapabilities;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -31,12 +30,12 @@ public class IOConfig implements IIOConfig {
     }
 
     @Override
-    public IOMode getMode(Direction side) {
+    public IOMode getIOMode(Direction side) {
         return config.get(translateSide(side));
     }
 
     @Override
-    public void setMode(Direction side, IOMode mode) {
+    public void setIOMode(Direction side, IOMode mode) {
         Direction relSide = translateSide(side);
         IOMode oldMode = config.get(relSide);
         config.put(relSide, mode);
@@ -44,7 +43,7 @@ public class IOConfig implements IIOConfig {
     }
 
     @Override
-    public boolean supportsMode(Direction side, IOMode state) {
+    public boolean supportsIOMode(Direction side, IOMode state) {
         return true;
     }
 
@@ -69,14 +68,14 @@ public class IOConfig implements IIOConfig {
     // region Capability Provider
 
     @Override
-    public Capability<ISideConfig> getCapabilityType() {
+    public Capability<SideConfig> getCapabilityType() {
         return EIOCapabilities.SIDE_CONFIG;
     }
 
     /**
      * Get side config as a capability.
      */
-    public LazyOptional<ISideConfig> getCapability(@Nullable Direction side) {
+    public LazyOptional<SideConfig> getCapability(@Nullable Direction side) {
         if (side == null) {
             return LazyOptional.empty();
         }
@@ -175,20 +174,20 @@ public class IOConfig implements IIOConfig {
     // endregion
 
     // For providing sided access via a capability.
-    private record SideAccess(IOConfig config, Direction side) implements ISideConfig {
+    private record SideAccess(IOConfig config, Direction side) implements SideConfig {
         @Override
         public IOMode getMode() {
-            return config.getMode(side);
+            return config.getIOMode(side);
         }
 
         @Override
         public void setMode(IOMode mode) {
-            config.setMode(side, mode);
+            config.setIOMode(side, mode);
         }
 
         @Override
         public void cycleMode() {
-            config.cycleMode(side);
+            config.cycleIOMode(side);
         }
     }
 }

@@ -122,7 +122,7 @@ public class MachineFluidHandler implements IFluidHandler, IEnderCapabilityProvi
             return selfCache.cast();
         }
 
-        if (!config.getMode(side).canConnect()) {
+        if (!config.getIOMode(side).canConnect()) {
             return LazyOptional.empty();
         }
 
@@ -182,7 +182,7 @@ public class MachineFluidHandler implements IFluidHandler, IEnderCapabilityProvi
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            if (master.getConfig().getMode(direction).canInput()) {
+            if (master.getConfig().getIOMode(direction).canInput()) {
                 return master.fill(resource, action);
             }
 
@@ -191,7 +191,7 @@ public class MachineFluidHandler implements IFluidHandler, IEnderCapabilityProvi
 
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            if (master.getConfig().getMode(direction).canOutput()) {
+            if (master.getConfig().getIOMode(direction).canOutput()) {
                 return master.drain(resource, action);
             }
 
@@ -200,7 +200,7 @@ public class MachineFluidHandler implements IFluidHandler, IEnderCapabilityProvi
 
         @Override
         public FluidStack drain(int maxDrain, FluidAction action) {
-            if (master.getConfig().getMode(direction).canOutput()) {
+            if (master.getConfig().getIOMode(direction).canOutput()) {
                 return master.drain(maxDrain, action);
             }
 

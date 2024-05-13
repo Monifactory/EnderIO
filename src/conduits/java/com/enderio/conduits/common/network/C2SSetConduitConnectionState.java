@@ -1,7 +1,7 @@
 package com.enderio.conduits.common.network;
 
-import com.enderio.api.conduit.ConduitTypes;
-import com.enderio.api.conduit.IConduitType;
+import com.enderio.api.conduit.ConduitRegistries;
+import com.enderio.api.conduit.ConduitType;
 import com.enderio.conduits.common.blockentity.ConduitBlockEntity;
 import com.enderio.conduits.common.blockentity.connection.DynamicConnectionState;
 import com.enderio.core.common.network.Packet;
@@ -19,10 +19,10 @@ public class C2SSetConduitConnectionState implements Packet {
 
     private final BlockPos pos;
     private final Direction direction;
-    private final IConduitType<?> conduitType;
+    private final ConduitType<?> conduitType;
     private final DynamicConnectionState connectionState;
 
-    public C2SSetConduitConnectionState(BlockPos pos, Direction direction, IConduitType<?> conduitType, DynamicConnectionState connectionState) {
+    public C2SSetConduitConnectionState(BlockPos pos, Direction direction, ConduitType<?> conduitType, DynamicConnectionState connectionState) {
         this.pos = pos;
         this.direction = direction;
         this.conduitType = conduitType;
@@ -32,7 +32,7 @@ public class C2SSetConduitConnectionState implements Packet {
     public C2SSetConduitConnectionState(FriendlyByteBuf buf) {
         pos = buf.readBlockPos();
         direction = buf.readEnum(Direction.class);
-        conduitType = ConduitTypes.getRegistry().getValue(buf.readResourceLocation());
+        conduitType = ConduitRegistries.getRegistry().getValue(buf.readResourceLocation());
         connectionState = DynamicConnectionState.fromNetwork(buf);
     }
 
@@ -54,7 +54,7 @@ public class C2SSetConduitConnectionState implements Packet {
     protected void write(FriendlyByteBuf writeInto) {
         writeInto.writeBlockPos(pos);
         writeInto.writeEnum(direction);
-        writeInto.writeResourceLocation(ConduitTypes.getRegistry().getKey(conduitType));
+        writeInto.writeResourceLocation(ConduitRegistries.getRegistry().getKey(conduitType));
         connectionState.toNetwork(writeInto);
     }
 

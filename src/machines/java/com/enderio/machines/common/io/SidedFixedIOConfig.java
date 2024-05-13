@@ -1,6 +1,6 @@
 package com.enderio.machines.common.io;
 
-import com.enderio.api.capability.ISideConfig;
+import com.enderio.api.capability.SideConfig;
 import com.enderio.api.io.IIOConfig;
 import com.enderio.api.io.IOMode;
 import com.enderio.base.common.init.EIOCapabilities;
@@ -24,18 +24,18 @@ public final class SidedFixedIOConfig implements IIOConfig {
     }
 
     @Override
-    public IOMode getMode(Direction side) {
+    public IOMode getIOMode(Direction side) {
         return mode.apply(side);
     }
 
     @Override
-    public void setMode(Direction side, IOMode mode) {}
+    public void setIOMode(Direction side, IOMode mode) {}
 
     @Override
-    public void cycleMode(Direction side) {}
+    public void cycleIOMode(Direction side) {}
 
     @Override
-    public boolean supportsMode(Direction side, IOMode mode) {
+    public boolean supportsIOMode(Direction side, IOMode mode) {
         return mode == this.mode.apply(side);
     }
 
@@ -56,12 +56,12 @@ public final class SidedFixedIOConfig implements IIOConfig {
     }
 
     @Override
-    public Capability<ISideConfig> getCapabilityType() {
+    public Capability<SideConfig> getCapabilityType() {
         return EIOCapabilities.SIDE_CONFIG;
     }
 
     @Override
-    public LazyOptional<ISideConfig> getCapability(@Nullable Direction side) {
+    public LazyOptional<SideConfig> getCapability(@Nullable Direction side) {
         return LazyOptional.empty();
     }
 

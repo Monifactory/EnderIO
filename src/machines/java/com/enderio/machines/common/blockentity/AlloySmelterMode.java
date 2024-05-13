@@ -1,7 +1,7 @@
 package com.enderio.machines.common.blockentity;
 
 import com.enderio.EnderIO;
-import com.enderio.api.misc.IIcon;
+import com.enderio.api.misc.Icon;
 import com.enderio.api.misc.Vector2i;
 import com.enderio.machines.common.lang.MachineLang;
 import net.minecraft.network.chat.Component;
@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
  * Alloy smelter mode.
  * Also provides icon behaviours for GUI.
  */
-public enum AlloySmelterMode implements IIcon {
+public enum AlloySmelterMode implements Icon {
     /**
      * Furnace mode, only performs smelting recipes.
      */

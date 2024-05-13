@@ -7,7 +7,7 @@ import com.enderio.base.common.capability.Toggled;
 import com.enderio.base.common.init.EIOCapabilities;
 import com.enderio.base.common.lang.EIOLang;
 import com.enderio.core.client.item.EnergyBarDecorator;
-import com.enderio.core.client.item.IAdvancedTooltipProvider;
+import com.enderio.core.client.item.AdvancedTooltipProvider;
 import com.enderio.core.common.item.ITabVariants;
 import com.enderio.core.common.util.EnergyUtil;
 import com.enderio.core.common.util.TooltipUtil;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class PoweredToggledItem extends Item implements IMultiCapabilityItem, IAdvancedTooltipProvider, ITabVariants {
+public abstract class PoweredToggledItem extends Item implements IMultiCapabilityItem, AdvancedTooltipProvider, ITabVariants {
 
     public PoweredToggledItem(Properties pProperties) {
         super(pProperties.stacksTo(1));

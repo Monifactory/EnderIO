@@ -1,7 +1,7 @@
 package com.enderio.base.common.recipe;
 
 import com.enderio.EnderIO;
-import com.enderio.api.grindingball.IGrindingBallData;
+import com.enderio.api.grindingball.GrindingBallData;
 import com.enderio.base.common.init.EIORecipes;
 import com.enderio.core.common.recipes.EnderRecipe;
 import com.google.gson.JsonObject;
@@ -21,7 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
-public class GrindingBallRecipe implements IGrindingBallData, EnderRecipe<Container> {
+public class GrindingBallRecipe implements GrindingBallData, EnderRecipe<Container> {
     private final ResourceLocation id;
     private final Item item;
     private final float doublingChance;

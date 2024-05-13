@@ -166,7 +166,7 @@ public class MachineEnergyStorage implements IMachineEnergyStorage, IEnderCapabi
             return selfCache.cast();
         }
 
-        if (!config.getMode(side).canConnect()) {
+        if (!config.getIOMode(side).canConnect()) {
             return LazyOptional.empty();
         }
 
@@ -245,7 +245,7 @@ public class MachineEnergyStorage implements IMachineEnergyStorage, IEnderCapabi
 
         @Override
         public boolean canExtract() {
-            if (wrapped.getIOMode().respectIOConfig() && !wrapped.getConfig().getMode(side).canOutput()) {
+            if (wrapped.getIOMode().respectIOConfig() && !wrapped.getConfig().getIOMode(side).canOutput()) {
                 return false;
             }
 
@@ -254,7 +254,7 @@ public class MachineEnergyStorage implements IMachineEnergyStorage, IEnderCapabi
 
         @Override
         public boolean canReceive() {
-            if (wrapped.getIOMode().respectIOConfig() && !wrapped.getConfig().getMode(side).canInput()) {
+            if (wrapped.getIOMode().respectIOConfig() && !wrapped.getConfig().getIOMode(side).canInput()) {
                 return false;
             }
 

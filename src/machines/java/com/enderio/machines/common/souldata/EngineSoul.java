@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EngineSoul {
 
-    public record SoulData(ResourceLocation entitytype, String fluid, int powerpermb, int tickpermb) implements ISoulData {
+    public record SoulData(ResourceLocation entitytype, String fluid, int powerpermb, int tickpermb) implements com.enderio.machines.common.souldata.SoulData {
         @Override
         public ResourceLocation getKey() {
             return entitytype();
@@ -18,11 +18,11 @@ public class EngineSoul {
     }
 
     public static final Codec<SoulData> CODEC = RecordCodecBuilder.create(soulDataInstance ->
-       soulDataInstance.group(ResourceLocation.CODEC.fieldOf("entity").forGetter(SoulData::entitytype),
-           Codec.STRING.fieldOf("fluid").forGetter(SoulData::fluid),
-           Codec.INT.fieldOf("power/mb").forGetter(SoulData::powerpermb),
-           Codec.INT.fieldOf("tick/mb").forGetter(SoulData::tickpermb))
-           .apply(soulDataInstance, SoulData::new));
+       soulDataInstance.group(ResourceLocation.CODEC.fieldOf("entity").forGetter(EngineSoul.SoulData::entitytype),
+           Codec.STRING.fieldOf("fluid").forGetter(EngineSoul.SoulData::fluid),
+           Codec.INT.fieldOf("power/mb").forGetter(EngineSoul.SoulData::powerpermb),
+           Codec.INT.fieldOf("tick/mb").forGetter(EngineSoul.SoulData::tickpermb))
+           .apply(soulDataInstance, EngineSoul.SoulData::new));
 
     public static final String NAME = "engine";
     public static final SoulDataReloadListener<SoulData> ENGINE = new SoulDataReloadListener<>(NAME, CODEC);

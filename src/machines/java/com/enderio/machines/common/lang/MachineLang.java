@@ -20,7 +20,6 @@ public class MachineLang {
     public static final Component TOOLTIP_ENERGY_EQUIVALENCE = REGISTRATE.addLang("gui", EnderIO.loc("energy_equivalence"), "A unit of energy, equivalent to FE.");
     public static final MutableComponent TOOLTIP_SAG_MILL_CHANCE_BALL = REGISTRATE.addLang("gui", EnderIO.loc("sag_mill_chance_ball"), "Chance: %s%% (modified by grinding ball)");
     public static final MutableComponent TOOLTIP_SAG_MILL_CHANCE = REGISTRATE.addLang("gui", EnderIO.loc("sag_mill_chance"), "Chance: %s%%");
-    public static final MutableComponent TOOLTIP_NO_SOULBOUND = REGISTRATE.addLang("gui", EnderIO.loc("no_soulbound"), "Bind a soul to the item to be able to use it");
     public static final MutableComponent TOOLTIP_ACTIVE = REGISTRATE.addLang("gui", EnderIO.loc("active"), "The machine is active");
     public static final MutableComponent TOOLTIP_IDLE = REGISTRATE.addLang("gui", EnderIO.loc("idle"), "The machine is ready to work");
 

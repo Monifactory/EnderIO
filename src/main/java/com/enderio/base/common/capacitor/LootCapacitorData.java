@@ -2,7 +2,7 @@ package com.enderio.base.common.capacitor;
 
 import com.enderio.EnderIO;
 import com.enderio.api.capacitor.CapacitorModifier;
-import com.enderio.api.capacitor.ICapacitorData;
+import com.enderio.api.capacitor.CapacitorData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -12,10 +12,7 @@ import java.util.stream.Collectors;
 
 import static com.enderio.base.EIONBTKeys.CAPACITOR_DATA;
 
-// TODO: Instead of loot capacitors having lists of specialized machines, have different loot capacitor items for different
-//       machine categories.
-// TODO: Loot capacitor types (Sculk, Soul) found in respective dungeons/structures.
-public final class LootCapacitorData implements ICapacitorData {
+public final class LootCapacitorData implements CapacitorData {
     private final ItemStack stack;
 
 //    private final Map<CapacitorModifier, Float> modifiers;
@@ -44,7 +41,7 @@ public final class LootCapacitorData implements ICapacitorData {
     }
 
     @Override
-    public float getBase() {
+    public float base() {
         var tag = this.stack.getOrCreateTag();
         if (tag.contains(CAPACITOR_DATA) && tag.getCompound(CAPACITOR_DATA).contains(KEY_BASE)) {
             return tag.getCompound(CAPACITOR_DATA).getFloat(KEY_BASE);
@@ -68,11 +65,11 @@ public final class LootCapacitorData implements ICapacitorData {
             return tag.getCompound(CAPACITOR_DATA).getCompound(KEY_MODIFIER_ARRAY).getFloat(modifier.name());
         }
 
-        return getBase();
+        return base();
     }
 
     @Override
-    public Map<CapacitorModifier, Float> getAllModifiers() {
+    public Map<CapacitorModifier, Float> modifiers() {
         var tag = this.stack.getOrCreateTag();
 
         if (tag.contains(CAPACITOR_DATA) && tag.getCompound(CAPACITOR_DATA).contains(KEY_MODIFIER_ARRAY)) {

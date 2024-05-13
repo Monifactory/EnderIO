@@ -1,7 +1,7 @@
 package com.enderio.machines.common.recipe;
 
 import com.enderio.EnderIO;
-import com.enderio.api.grindingball.IGrindingBallData;
+import com.enderio.api.grindingball.GrindingBallData;
 import com.enderio.core.common.recipes.OutputStack;
 import com.enderio.core.common.util.TagUtil;
 import com.enderio.machines.common.blockentity.SagMillBlockEntity;
@@ -65,7 +65,7 @@ public class SagMillingRecipe implements MachineRecipe<SagMillingRecipe.Containe
         return getEnergyCost(container.getGrindingBall());
     }
 
-    public int getEnergyCost(IGrindingBallData grindingBallData) {
+    public int getEnergyCost(GrindingBallData grindingBallData) {
         return (int) (energy * grindingBallData.getPowerUse());
     }
 
@@ -258,14 +258,14 @@ public class SagMillingRecipe implements MachineRecipe<SagMillingRecipe.Containe
 
     public static class Container extends RecipeWrapper {
 
-        private final Supplier<IGrindingBallData> grindingBallData;
+        private final Supplier<GrindingBallData> grindingBallData;
 
-        public Container(IItemHandlerModifiable inv, Supplier<IGrindingBallData> data) {
+        public Container(IItemHandlerModifiable inv, Supplier<GrindingBallData> data) {
             super(inv);
             this.grindingBallData = data;
         }
 
-        public final IGrindingBallData getGrindingBall() {
+        public final GrindingBallData getGrindingBall() {
             return grindingBallData.get();
         }
     }

@@ -1,6 +1,6 @@
 package com.enderio.base.common.util;
 
-import com.enderio.api.grindingball.IGrindingBallData;
+import com.enderio.api.grindingball.GrindingBallData;
 import com.enderio.base.common.init.EIORecipes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -18,8 +18,8 @@ import java.util.List;
 
 @Mod.EventBusSubscriber
 public class GrindingBallManager {
-    private static final HashMap<Item, IGrindingBallData> ITEM_TO_DATA = new HashMap<>();
-    private static final HashMap<ResourceLocation, IGrindingBallData> ID_TO_DATA = new HashMap<>();
+    private static final HashMap<Item, GrindingBallData> ITEM_TO_DATA = new HashMap<>();
+    private static final HashMap<ResourceLocation, GrindingBallData> ID_TO_DATA = new HashMap<>();
 
     private static boolean clearCache = false;
 
@@ -29,10 +29,10 @@ public class GrindingBallManager {
             && ITEM_TO_DATA.containsKey(stack.getItem());
     }
 
-    public static IGrindingBallData getData(ItemStack stack) {
+    public static GrindingBallData getData(ItemStack stack) {
         checkCacheRebuild();
         Item item = stack.getItem();
-        return ITEM_TO_DATA.getOrDefault(item, IGrindingBallData.IDENTITY);
+        return ITEM_TO_DATA.getOrDefault(item, GrindingBallData.IDENTITY);
     }
 
     public static List<Item> getGrindingBalls() {
@@ -40,9 +40,9 @@ public class GrindingBallManager {
         return List.copyOf(ITEM_TO_DATA.keySet());
     }
 
-    public static IGrindingBallData getData(ResourceLocation dataId) {
+    public static GrindingBallData getData(ResourceLocation dataId) {
         checkCacheRebuild();
-        return ID_TO_DATA.getOrDefault(dataId, IGrindingBallData.IDENTITY);
+        return ID_TO_DATA.getOrDefault(dataId, GrindingBallData.IDENTITY);
     }
 
 

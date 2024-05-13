@@ -13,11 +13,15 @@ public class ConduitBlocks {
 
     public static final BlockEntry<ConduitBlock> CONDUIT = REGISTRATE
         .block("conduit", ConduitBlock::new)
-        .properties(props -> props.strength(1.5f, 10).noLootTable().noOcclusion().dynamicShape().mapColor(MapColor.STONE))
+        .properties(props ->
+            props.strength(1.5f, 10)
+                .noLootTable()
+                .noOcclusion()
+                .dynamicShape()
+                .mapColor(MapColor.STONE))
         .blockstate(ConduitBlockState::conduit)
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
-
 
     public static void register() {}
 }

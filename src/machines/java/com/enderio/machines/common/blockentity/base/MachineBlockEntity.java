@@ -1,7 +1,7 @@
 package com.enderio.machines.common.blockentity.base;
 
 import com.enderio.api.UseOnly;
-import com.enderio.api.capability.ISideConfig;
+import com.enderio.api.capability.SideConfig;
 import com.enderio.api.io.IIOConfig;
 import com.enderio.api.io.IOMode;
 import com.enderio.api.misc.RedstoneControl;
@@ -209,8 +209,8 @@ public abstract class MachineBlockEntity extends EnderBlockEntity implements Men
             }
 
             @Override
-            public boolean supportsMode(Direction side, IOMode mode) {
-                return supportsIOMode(side, mode);
+            public boolean supportsIOMode(Direction side, IOMode mode) {
+                return machineSupportsIOMode(side, mode);
             }
         };
     }
@@ -232,7 +232,7 @@ public abstract class MachineBlockEntity extends EnderBlockEntity implements Men
      * Override to declare custom constraints on IOMode's for sides of blocks.
      */
     @SuppressWarnings("unused")
-    protected boolean supportsIOMode(Direction side, IOMode mode) {
+    protected boolean machineSupportsIOMode(Direction side, IOMode mode) {
         return true;
     }
 
@@ -475,7 +475,7 @@ public abstract class MachineBlockEntity extends EnderBlockEntity implements Men
      */
     private void forceResources() {
         for (Direction direction : Direction.values()) {
-            if (ioConfig.getMode(direction).canForce()) {
+            if (ioConfig.getIOMode(direction).canForce()) {
                 // TODO: Maybe some kind of resource distributor so that items are transmitted evenly around? rather than taking the order of Direction.values()
                 moveItems(direction);
                 moveFluids(direction);
@@ -494,7 +494,7 @@ public abstract class MachineBlockEntity extends EnderBlockEntity implements Men
 
             if (otherHandler.isPresent()) {
                 // Get side config
-                IOMode mode = ioConfig.getMode(side);
+                IOMode mode = ioConfig.getIOMode(side);
 
                 // Output items to the other provider if enabled.
                 if (mode.canPush()) {
@@ -538,7 +538,7 @@ public abstract class MachineBlockEntity extends EnderBlockEntity implements Men
 
             if (otherHandler.isPresent()) {
                 // Get side config
-                IOMode mode = ioConfig.getMode(side);
+                IOMode mode = ioConfig.getIOMode(side);
 
                 // Test if we have fluid.
                 FluidStack stack = selfHandler.drain(100, FluidAction.SIMULATE);
@@ -748,10 +748,10 @@ public abstract class MachineBlockEntity extends EnderBlockEntity implements Men
             return InteractionResult.CONSUME;
         } else {
             // Check for side config capability
-            LazyOptional<ISideConfig> optSideConfig = getCapability(EIOCapabilities.SIDE_CONFIG, side);
+            LazyOptional<SideConfig> optSideConfig = getCapability(EIOCapabilities.SIDE_CONFIG, side);
             if (optSideConfig.isPresent()) {
                 // Cycle state.
-                optSideConfig.ifPresent(ISideConfig::cycleMode);
+                optSideConfig.ifPresent(SideConfig::cycleMode);
                 return InteractionResult.CONSUME;
             }
         }
