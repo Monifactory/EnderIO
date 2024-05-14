@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "O": {
+      "tag": "forge:dusts/obsidian"
+    },
+    "P": [
+      {
+        "item": "minecraft:paper"
+      },
+      {
+        "item": "enderio:black_paper"
+      }
+    ],
+    "S": {
+      "item": "enderio:skeletal_contractor"
+    }
+  },
+  "pattern": [
+    "OPO",
+    "PSP",
+    "OPO"
+  ],
+  "result": {
+    "item": "enderio:big_item_filter"
+  },
+  "show_notification": true
+}

@@ -13,6 +13,10 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
@@ -40,6 +44,25 @@ public class ConduitRecipes extends RecipeProvider {
             .pattern("BBB")
             .define('B', EIOItems.CONDUIT_BINDER)
             .define('G', EIOTags.Items.CLEAR_GLASS)
+            .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(EIOItems.CONDUIT_BINDER))
+            .save(pWriter);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ConduitItems.BASIC_ITEM_FILTER)
+            .pattern(" P ")
+            .pattern("PHP")
+            .pattern(" P ")
+            .define('H', Blocks.HOPPER)
+            .define('P', Ingredient.of(Items.PAPER, EIOItems.BLACK_PAPER))
+            .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(EIOItems.CONDUIT_BINDER))
+            .save(pWriter);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ConduitItems.BIG_ITEM_FILTER)
+            .pattern("OPO")
+            .pattern("PSP")
+            .pattern("OPO")
+            .define('S', EIOItems.SKELETAL_CONTRACTOR)
+            .define('P', Ingredient.of(Items.PAPER, EIOItems.BLACK_PAPER))
+            .define('O', EIOTags.Items.DUSTS_OBSIDIAN)
             .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(EIOItems.CONDUIT_BINDER))
             .save(pWriter);
 
