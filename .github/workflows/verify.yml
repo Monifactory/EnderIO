@@ -4,28 +4,31 @@ name: Verify Build and Generated Data
 # If run on the primary branch, the gradle caches will be updated for all PRs to use.
 on: 
   pull_request:
+    branches:
+    - main
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: run_linters-${{ github.head_ref || github.run_id }}
+      cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: gradle/actions/wrapper-validation@v3
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: 17
           distribution: 'temurin'
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
       - name: Store committed data
         run: cp -r src/generated generatedBak
       - name: Build # Build to catch Java errors first
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: build
       - name: Run data generator
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: runDataProd
       - name: Check data generated successfully # So we do this to ensure something was done, .cache will always be written
