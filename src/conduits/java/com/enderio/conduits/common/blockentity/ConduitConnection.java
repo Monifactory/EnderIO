@@ -125,6 +125,9 @@ public class ConduitConnection implements INBTSerializable<CompoundTag> {
                 element.putInt(KEY_INSERT, dynamicState.insert().ordinal());
                 element.putInt(KEY_REDSTONE_CONTROL, dynamicState.control().ordinal());
                 element.putInt(KEY_REDSTONE_CHANNEL, dynamicState.redstoneChannel().ordinal());
+                for(SlotType slotType : SlotType.values()){
+                    element.put(slotType.name(), dynamicState.getItem(slotType).serializeNBT());
+                }
             }
             tag.put(String.valueOf(i), element);
         }
@@ -144,8 +147,9 @@ public class ConduitConnection implements INBTSerializable<CompoundTag> {
                 var insertIndex = nbt.getInt(KEY_INSERT);
                 var redControl = nbt.getInt(KEY_REDSTONE_CONTROL);
                 var redChannel = nbt.getInt(KEY_REDSTONE_CHANNEL);
-                IConnectionState prev = connectionStates[i];
-                Optional<DynamicConnectionState> dyn = Optional.ofNullable(prev instanceof DynamicConnectionState dynState ? dynState : null);
+                var filterInsert = ItemStack.of(nbt.getCompound(SlotType.FILTER_INSERT.name()));
+                var filterExtract = ItemStack.of(nbt.getCompound(SlotType.FILTER_EXTRACT.name()));
+                var upgradeExtract = ItemStack.of(nbt.getCompound(SlotType.UPGRADE_EXTRACT.name()));
                 connectionStates[i] = new DynamicConnectionState(
                     isInsert,
                      ColorControl.values()[insertIndex],
@@ -153,9 +157,9 @@ public class ConduitConnection implements INBTSerializable<CompoundTag> {
                     ColorControl.values()[extractIndex],
                     RedstoneControl.values()[redControl],
                     ColorControl.values()[redChannel],
-                    dyn.map(DynamicConnectionState::filterInsert).orElse(ItemStack.EMPTY),
-                    dyn.map(DynamicConnectionState::filterExtract).orElse(ItemStack.EMPTY),
-                    dyn.map(DynamicConnectionState::upgradeExtract).orElse(ItemStack.EMPTY)
+                    filterInsert,
+                    filterExtract,
+                    upgradeExtract
                 );
             }
         }
