@@ -6,7 +6,10 @@ on:
   pull_request:
     branches:
     - main
-
+  merge_group:
+    branches:
+    - main
+    
 jobs:
   verify:
     runs-on: ubuntu-22.04
@@ -23,14 +26,11 @@ jobs:
           distribution: 'temurin'
       - name: Store committed data
         run: cp -r src/generated generatedBak
-      - name: Build # Build to catch Java errors first
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: build
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Build
+        run: ./gradlew build
       - name: Run data generator
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: runDataProd
+        run: ./gradlew runDataProd      
       - name: Check data generated successfully # So we do this to ensure something was done, .cache will always be written
         id: check_files
         uses: andstor/file-existence-action@v1
