@@ -1,3 +1,5 @@
+import com.hypherionmc.modpublisher.properties.ModLoader
+
 import java.util.function.Consumer
 
 plugins {
@@ -27,6 +29,8 @@ java {
             vendor = JvmVendorSpec.JETBRAINS
         }
     }
+
+    withSourcesJar()
 }
 
 // List of all subsets. This is used for dividing the mod into logical components.
@@ -243,12 +247,13 @@ jar {
 
     manifest {
         attributes([
-                "Specification-Title"     : "EnderIO",
+                "Specification-Title"     : project.name,
                 "Specification-Vendor"    : "SleepyTrousers",
                 "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Version"  : project.version,
                 "Implementation-Vendor"   : "SleepyTrousers",
+                'Implementation-Commit'     : 'git rev-parse HEAD'.execute().text.trim(),
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "MixinConfigs"            : "enderio.mixins.json"
         ])
@@ -261,33 +266,18 @@ jar {
         from sourceSets.getByName(set).output
     }
 
-    // TODO: Do we need to bother reobfuscating it?
-    //       The real question is does maven need it to be obfuscated? If so then this stays
     finalizedBy('reobfJar')
 }
 
 tasks.register('apiJar', Jar) {
+    group = 'build'
     archiveClassifier = 'api'
     from sourceSets.api.output
 }
 build.dependsOn apiJar
 
-tasks.register('sourcesJar', Jar) {
-    dependsOn classes
-    archiveClassifier = 'sources'
-
-    from sourceSets.api.allJava
-    from sourceSets.main.allJava
-    from sourceSets.core.allJava
-
-    for (String set : subsets) {
-        from sourceSets.getByName(set).allJava
-    }
-}
-build.dependsOn sourcesJar
-
 // Add other source sets to jarJar
-tasks.jarJar.configure {
+tasks.named('jarJar') {
     archiveClassifier = ""
 
     from sourceSets.api.output
@@ -300,38 +290,54 @@ tasks.jarJar.configure {
 }
 build.dependsOn tasks.jarJar
 
-if (getReleaseType() != null) {
-    if (System.getenv("CHANGELOG") != null) {
-        publisher {
-            apiKeys {
-                curseforge = System.getenv("CURSEFORGE_TOKEN")
-                modrinth = System.getenv("MODRINTH_TOKEN")
-            }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
 
-            debug = System.getenv("PUBLISH") != "true"
-            curseID = curseforge_projectId
-            modrinthID = modrinth_projectId
-            versionType = getReleaseType()
-            version = "${getVersionString()}"
-            displayName = "Ender IO - ${getVersionString()}"
-            changelog = System.getenv("CHANGELOG")
-            gameVersions = [minecraft_version]
-            loaders = ["forge"]
-            artifact = tasks.jarJar
+// publisher task hackery because it wont run the tasks!
+tasks.publishCurseforge {
+    dependsOn(tasks.sourcesJar)
+    dependsOn(tasks.apiJar)
+}
 
-            curseDepends {
-                optional = ["jei", /*"patchouli",*/ "athena", "applied-energistics-2"]
-            }
+publisher {
+    apiKeys {
+        curseforge System.getenv("CURSEFORGE_TOKEN")
+    }
 
-            modrinthDepends {
-                optional = [/*modrinth_dep_patchouli, */ modrinth_dep_jei, modrinth_dep_athena, modrinth_dep_ae2]
-            }
-        }
-    } else {
-        println("Release disabled, no changelog found in environment");
+    setDebug(System.getenv("PUBLISH") != "true" || System.getenv("CHANGELOG") == null)
+    setCurseID(curseforge_projectId)
+
+    setChangelog(System.getenv("CHANGELOG"))
+    setVersionType(getReleaseType())
+    setVersion("${getVersionString()}")
+    setDisplayName("[1.20.1] Ender IO Unofficial - ${getVersionString()}")
+    setGameVersions("1.20.1")
+    setGameVersions(["${minecraft_version}"])
+    setLoaders(ModLoader.FORGE, ModLoader.NEOFORGE)
+    setJavaVersions([JavaVersion.VERSION_17])
+    setDisableEmptyJarCheck(false)
+    setArtifact(tasks.jarJar)
+
+    addAdditionalFile {
+        artifact tasks.sourcesJar
+        displayName "EIOU Sources - ${getVersionString()}"
+        changelog "# Do not download this, this is only for developers"
+    }
+
+    addAdditionalFile {
+        artifact tasks.apiJar
+        displayName "EIOU API - ${getVersionString()}"
+        changelog "# Do not download this, this is only for developers"
+    }
+
+    curseDepends {
+        optional "jei", "athena", "applied-energistics-2"
     }
 }
 
+// TODO: temp disable maven publication
+/*
 publishing {
     publications {
         maven(MavenPublication) {
@@ -375,10 +381,7 @@ publishing {
         }
     }
 }
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
+*/
 
 // ============
 // Utilities
