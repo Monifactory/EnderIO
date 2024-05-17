@@ -10,6 +10,7 @@ import com.enderio.conduits.common.ConduitShape;
 import com.enderio.conduits.common.blockentity.connection.DynamicConnectionState;
 import com.enderio.conduits.common.blockentity.connection.IConnectionState;
 import com.enderio.conduits.common.blockentity.connection.StaticConnectionStates;
+import com.enderio.conduits.common.init.ConduitItems;
 import com.enderio.conduits.common.menu.ConduitMenu;
 import com.enderio.conduits.common.network.ConduitSavedData;
 import com.enderio.core.common.blockentity.EnderBlockEntity;
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -566,8 +568,9 @@ public class ConduitBlockEntity extends EnderBlockEntity {
             }
 
             ItemStack existing = getStackInSlot(slot);
-
-            int limit = Math.min(getSlotLimit(slot), stack.getMaxStackSize());
+            int limit = stack.getItem().equals(ConduitItems.SPEED_UPGRADE.asItem()) ? 15
+                : stack.getItem().equals(ConduitItems.SPEED_DOWNGRADE.asItem()) ? 3
+                : Math.min(getSlotLimit(slot), stack.getMaxStackSize());
 
             if (!existing.isEmpty()) {
                 if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
@@ -629,8 +632,7 @@ public class ConduitBlockEntity extends EnderBlockEntity {
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            //TODO implement
-            return slot < getSlots();
+            return slot < getSlots() && SlotData.of(slot).slotType().acceptsItem(stack.getItem());
         }
 
         @Override
@@ -647,8 +649,7 @@ public class ConduitBlockEntity extends EnderBlockEntity {
             ConduitConnection connection = bundle.getConnection(data.direction());
             ConduitMenuData conduitData = bundle.getTypes().get(data.conduitIndex()).getMenuData();
 
-            if ((data.slotType() == SlotType.FILTER_EXTRACT && conduitData.hasFilterExtract()) || (data.slotType() == SlotType.FILTER_INSERT
-                && conduitData.hasFilterInsert()) || (data.slotType() == SlotType.UPGRADE_EXTRACT && conduitData.hasUpgrade())) {
+            if (data.slotType().isAvailableFor(conduitData)) {
                 connection.setItem(data.slotType(), data.conduitIndex(), stack);
             }
         }

@@ -8,6 +8,7 @@ import com.enderio.conduits.common.items.FilterItem;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.common.Mod;
 
@@ -26,6 +27,8 @@ public class ConduitItems {
 
     public static final ItemEntry<FilterItem> BASIC_ITEM_FILTER = filterItemBasic("basic_item_filter").register();
     public static final ItemEntry<FilterItem> BIG_ITEM_FILTER = filterItemBig("big_item_filter").register();
+    public static final ItemEntry<Item> SPEED_UPGRADE = REGISTRATE.item("extract_speed_upgrade", Item::new).tab(EIOCreativeTabs.MAIN).register();
+    public static final ItemEntry<Item> SPEED_DOWNGRADE = REGISTRATE.item("extract_speed_downgrade", Item::new).tab(EIOCreativeTabs.MAIN).register();
 
     private static ItemEntry<Item> createConduitItem(Supplier<? extends ConduitType<?>> type, String itemName) {
         return REGISTRATE.item(itemName + "_conduit",

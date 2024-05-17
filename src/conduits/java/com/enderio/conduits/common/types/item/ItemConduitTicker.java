@@ -8,6 +8,7 @@ import com.enderio.base.common.init.EIOCapabilities;
 import com.enderio.conduits.common.blockentity.ConduitBlockEntity;
 import com.enderio.conduits.common.blockentity.SlotData;
 import com.enderio.conduits.common.blockentity.SlotType;
+import com.enderio.conduits.common.init.ConduitItems;
 import dev.gigaherz.graph3.Graph;
 import dev.gigaherz.graph3.Mergeable;
 import net.minecraft.core.BlockPos;
@@ -35,7 +36,6 @@ public class ItemConduitTicker extends CapabilityAwareConduitTicker<IItemHandler
             var conduitItemHandler = conduitBlockEntity.getConduitItemHandler();
 
             for (var slotType: SlotType.values()) {
-                if (slotType == SlotType.UPGRADE_EXTRACT) continue; // not implemented
                 for (var dir: Direction.values()) {
                     var extendedData = node.getExtendedConduitData().castTo(ItemExtendedData.class).compute(dir);
                     var item = conduitItemHandler.getStackInSlot(new SlotData(dir, conduitBlockEntity.getBundle().getTypes().indexOf(type), slotType).slotIndex());
@@ -45,6 +45,9 @@ public class ItemConduitTicker extends CapabilityAwareConduitTicker<IItemHandler
                     }
                     if (slotType == SlotType.FILTER_INSERT) {
                         extendedData.insertFilter = item;
+                    }
+                    if (slotType == SlotType.UPGRADE_EXTRACT) {
+                        extendedData.extractRate = item.isEmpty() ? 4 : item.getItem().equals(ConduitItems.SPEED_DOWNGRADE.asItem()) ? item.getCount() : 4 + 4 * item.getCount();
                     }
                 }
             }
@@ -57,12 +60,12 @@ public class ItemConduitTicker extends CapabilityAwareConduitTicker<IItemHandler
         for (CapabilityConnection extract : extracts) {
             IItemHandler extractHandler = extract.cap;
             for (int i = 0; i < extractHandler.getSlots(); i++) {
-                ItemStack extractedItem = extractHandler.extractItem(i, 4, true);
+                ItemExtendedData.ItemSidedData sidedExtractData = extract.data.castTo(ItemExtendedData.class).compute(extract.direction);
+
+                ItemStack extractedItem = extractHandler.extractItem(i, sidedExtractData.extractRate, true);
                 if (extractedItem.isEmpty()) {
                     continue;
                 }
-
-                ItemExtendedData.ItemSidedData sidedExtractData = extract.data.castTo(ItemExtendedData.class).compute(extract.direction);
 
                 var insertFilterCap = sidedExtractData.extractFilter.getCapability(EIOCapabilities.ITEM_FILTER);
                 if (insertFilterCap.isPresent() && !insertFilterCap.resolve().get().testItem(extractedItem)) continue;
