@@ -1,38 +1,37 @@
-import java.util.function.Consumer
+import com.hypherionmc.modpublisher.properties.ModLoader
 
-buildscript {
-    repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://maven.moddingx.org' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7.+'
-        classpath 'org.moddingx:ModGradle:4.0.+'
-    }
-}
+import java.util.function.Consumer
 
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id "com.modrinth.minotaur" version "2.+"
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id "com.modrinth.minotaur" version "2.+"
     id "com.hypherionmc.modutils.modpublisher" version "2.+"
 }
 
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'org.moddingx.modgradle.mapping'
-
 version = getVersionString()
 group = 'com.enderio'
-archivesBaseName = "EnderIO-${minecraft_version}"
+
+base {
+    archivesName = "EnderIOUnofficial-${minecraft_version}"
+}
 
 println("Building Ender IO version ${version}")
 println("Release type: ${getReleaseType()}")
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        if (System.getProperty('idea.active')) {
+            vendor = JvmVendorSpec.JETBRAINS
+        }
+    }
+
+    withSourcesJar()
+}
 
 // List of all subsets. This is used for dividing the mod into logical components.
 // TODO: 1.19: Tidy the divisions and what goes where.
@@ -71,27 +70,20 @@ for (String set : subsets) {
 }
 
 minecraft {
-    if (mappings_channel == "sugarcane") {
-        mappings channel: 'sugarcane', version: "${mappings_version}-${minecraft_version}"
-    } else if (mappings_channel == "parchment") {
-        mappings channel: 'parchment', version: "${mappings_version}-${minecraft_version}"
-    } else if (mappings_channel == "parchment_previous") {
-        mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}-${minecraft_version}"
-    } else if (mappings_channel == "official") {
-        mappings channel: 'official', version: "${minecraft_version}"
-    }
+    mappings channel: mappings_channel, version: mappings_version
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
-        client {
-            workingDirectory project.file('run')
-
+        configureEach {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', 'enderio'
+
+            // Enables better hot reloading if using the JetBrains Runtime
+            if (System.getProperty('idea.active')) {
+                jvmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowRedefinitionToAddDeleteMethods'
+            }
 
             mods {
                 enderio {
@@ -104,6 +96,10 @@ minecraft {
                     }
                 }
             }
+        }
+
+        client {
+            workingDirectory project.file('run/client')
         }
         clientRandom {
             parent runs.client
@@ -111,31 +107,11 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('run-server')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'enderio'
-
-            mods {
-                enderio {
-                    source sourceSets.api
-                    source sourceSets.core
-                    source sourceSets.main
-
-                    for (String set : subsets) {
-                        source sourceSets.getByName(set)
-                    }
-                }
-            }
+            workingDirectory project.file('run/server')
         }
 
         data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file('run/data')
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
             args '--mod', 'enderio', '--server', '--client', '--output', file('src/generated/resources/'),
@@ -143,18 +119,6 @@ minecraft {
                     '--existing', file('src/machines/resources/'),
                     '--existing', file('src/conduits/resources/'),
                     '--existing', file('src/armory/resources/')
-
-            mods {
-                enderio {
-                    source sourceSets.api
-                    source sourceSets.core
-                    source sourceSets.main
-
-                    for (String set : subsets) {
-                        source sourceSets.getByName(set)
-                    }
-                }
-            }
         }
 
         dataProd {
@@ -201,9 +165,9 @@ void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepo
 
 repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'com.tterrag.registrate', 'com.jozufozu.flywheel')
-    exclusiveRepo(handler, 'https://modmaven.dev/', 'mezz.jei', 'mcjty.theoneprobe', 'appeng')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'appeng')
     exclusiveRepo(handler, 'https://cursemaven.com', 'curse.maven')
-    exclusiveRepo(handler, 'https://maven.blamejared.com', 'vazkii.patchouli', 'net.darkhax.bookshelf', 'net.darkhax.enchdesc', 'com.almostreliable.mods')
+    exclusiveRepo(handler, 'https://maven.blamejared.com', 'mezz.jei', 'vazkii.patchouli', 'net.darkhax.bookshelf', 'net.darkhax.enchdesc', 'com.almostreliable.mods')
     exclusiveRepo(handler, 'https://dogforce-games.com/maven', 'dev.gigaherz.graph')
     exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
 
@@ -214,7 +178,7 @@ jarJar.enable()
 
 dependencies {
     // Forge
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
 
     // Registrate
     implementation fg.deobf("com.tterrag.registrate:Registrate:MC1.20-${registrate_version}")
@@ -230,7 +194,6 @@ dependencies {
     // JEI
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //RFTOOLS
@@ -250,14 +213,6 @@ dependencies {
     runtimeOnly fg.deobf("net.darkhax.bookshelf:Bookshelf-Forge-${minecraft_version}:${bookshelf_version}")
     runtimeOnly fg.deobf("net.darkhax.enchdesc:EnchantmentDescriptions-Forge-${minecraft_version}:${ench_desc_version}")
 
-    // The One Probe https://github.com/McJtyMods/TheOneProbe/issues/548
-//    compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
-//        transitive = false
-//    }
-//    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
-//        transitive = false
-//    }
-
     // Jade
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_cf_id}")
 
@@ -273,9 +228,6 @@ dependencies {
     // Patchouli
 //    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
 //    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-
-    // While we don't have conduits etc.
-//    runtimeOnly fg.deobf("curse.maven:mekanism-268560:${mekanism_cf_id}")
 
     // Jetbrains annotations
     compileOnly 'org.jetbrains:annotations:23.0.0'
@@ -295,12 +247,13 @@ jar {
 
     manifest {
         attributes([
-                "Specification-Title"     : "EnderIO",
+                "Specification-Title"     : project.name,
                 "Specification-Vendor"    : "SleepyTrousers",
                 "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Version"  : project.version,
                 "Implementation-Vendor"   : "SleepyTrousers",
+                'Implementation-Commit'     : 'git rev-parse HEAD'.execute().text.trim(),
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "MixinConfigs"            : "enderio.mixins.json"
         ])
@@ -313,33 +266,18 @@ jar {
         from sourceSets.getByName(set).output
     }
 
-    // TODO: Do we need to bother reobfuscating it?
-    //       The real question is does maven need it to be obfuscated? If so then this stays
     finalizedBy('reobfJar')
 }
 
 tasks.register('apiJar', Jar) {
+    group = 'build'
     archiveClassifier = 'api'
     from sourceSets.api.output
 }
 build.dependsOn apiJar
 
-tasks.register('sourcesJar', Jar) {
-    dependsOn classes
-    archiveClassifier = 'sources'
-
-    from sourceSets.api.allJava
-    from sourceSets.main.allJava
-    from sourceSets.core.allJava
-
-    for (String set : subsets) {
-        from sourceSets.getByName(set).allJava
-    }
-}
-build.dependsOn sourcesJar
-
 // Add other source sets to jarJar
-tasks.jarJar.configure {
+tasks.named('jarJar') {
     archiveClassifier = ""
 
     from sourceSets.api.output
@@ -352,38 +290,54 @@ tasks.jarJar.configure {
 }
 build.dependsOn tasks.jarJar
 
-if (getReleaseType() != null) {
-    if (System.getenv("CHANGELOG") != null) {
-        publisher {
-            apiKeys {
-                curseforge = System.getenv("CURSEFORGE_TOKEN")
-                modrinth = System.getenv("MODRINTH_TOKEN")
-            }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
 
-            debug = System.getenv("PUBLISH") != "true"
-            curseID = curseforge_projectId
-            modrinthID = modrinth_projectId
-            versionType = getReleaseType()
-            version = "${getVersionString()}"
-            displayName = "Ender IO - ${getVersionString()}"
-            changelog = System.getenv("CHANGELOG")
-            gameVersions = [minecraft_version]
-            loaders = ["forge"]
-            artifact = tasks.jarJar
+// publisher task hackery because it wont run the tasks!
+tasks.publishCurseforge {
+    dependsOn(tasks.sourcesJar)
+    dependsOn(tasks.apiJar)
+}
 
-            curseDepends {
-                optional = ["jei", /*"patchouli",*/ "athena", "applied-energistics-2"]
-            }
+publisher {
+    apiKeys {
+        curseforge System.getenv("CURSEFORGE_TOKEN")
+    }
 
-            modrinthDepends {
-                optional = [/*modrinth_dep_patchouli, */ modrinth_dep_jei, modrinth_dep_athena, modrinth_dep_ae2]
-            }
-        }
-    } else {
-        println("Release disabled, no changelog found in environment");
+    setDebug(System.getenv("PUBLISH") != "true" || System.getenv("CHANGELOG") == null)
+    setCurseID(curseforge_projectId)
+
+    setChangelog(System.getenv("CHANGELOG"))
+    setVersionType(getReleaseType())
+    setVersion("${getVersionString()}")
+    setDisplayName("[1.20.1] Ender IO Unofficial - ${getVersionString()}")
+    setGameVersions("1.20.1")
+    setGameVersions(["${minecraft_version}"])
+    setLoaders(ModLoader.FORGE, ModLoader.NEOFORGE)
+    setJavaVersions([JavaVersion.VERSION_17])
+    setDisableEmptyJarCheck(false)
+    setArtifact(tasks.jarJar)
+
+    addAdditionalFile {
+        artifact tasks.sourcesJar
+        displayName "EIOU Sources - ${getVersionString()}"
+        changelog "# Do not download this, this is only for developers"
+    }
+
+    addAdditionalFile {
+        artifact tasks.apiJar
+        displayName "EIOU API - ${getVersionString()}"
+        changelog "# Do not download this, this is only for developers"
+    }
+
+    curseDepends {
+        optional "jei", "athena", "applied-energistics-2"
     }
 }
 
+// TODO: temp disable maven publication
+/*
 publishing {
     publications {
         maven(MavenPublication) {
@@ -398,7 +352,7 @@ publishing {
             pom {
                 name = 'Ender IO'
                 description = 'Ender IO is a full-featured tech mod. It has armor, tools, weapons, machines, conduits, inventory management, mobs, etc.'
-                url = 'https://github.com/SleepyTrousers/EnderIO-Rewrite'
+                url = 'https://github.com/Monifactory/EnderIO'
 
                 licenses {
                     license {
@@ -408,7 +362,7 @@ publishing {
                 }
 
                 scm {
-                    url = 'https://github.com/SleepyTrousers/EnderIO-Rewrite.git'
+                    url = 'https://github.com/Monifactory/EnderIO.git'
                 }
             }
         }
@@ -427,10 +381,7 @@ publishing {
         }
     }
 }
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
+*/
 
 // ============
 // Utilities

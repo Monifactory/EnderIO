@@ -16,12 +16,14 @@ logoFile="logo.png"
 modId="minecraft"
 mandatory=true
 versionRange="${mcversion}"
+ordering = "NONE"
 side="BOTH"
 
 [[dependencies.enderio]]
 modId="forge"
 mandatory=true
 versionRange="${forge_version}"
+ordering = "AFTER"
 side="BOTH"
 
 [[dependencies.enderio]]
