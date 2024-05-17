@@ -62,6 +62,7 @@ public class ItemExtendedData implements ExtendedConduitData<ItemExtendedData> {
         public int priority = 0;
         public ItemStack insertFilter = ItemStack.EMPTY;
         public ItemStack extractFilter = ItemStack.EMPTY;
+        public int extractRate = 4;
 
         // region Serialization
         private static final String KEY_ROTATING_INDEX = "RotatingIndex";
@@ -70,10 +71,12 @@ public class ItemExtendedData implements ExtendedConduitData<ItemExtendedData> {
         private static final String KEY_PRIORITY = "Priority";
         private static final String KEY_INSERT_FILTER = "InsertFilter";
         private static final String KEY_EXTRACT_FILTER = "ExtractFilter";
+        private static final String KEY_EXTRACT_RATE = "ExtractRate";
 
         private CompoundTag toNbt() {
             CompoundTag nbt = toGuiNbt();
             nbt.putInt(KEY_ROTATING_INDEX, rotatingIndex);
+            nbt.putInt(KEY_EXTRACT_RATE, extractRate);
             nbt.put(KEY_INSERT_FILTER, insertFilter.save(new CompoundTag()));
             nbt.put(KEY_EXTRACT_FILTER, extractFilter.save(new CompoundTag()));
             return nbt;
@@ -91,7 +94,8 @@ public class ItemExtendedData implements ExtendedConduitData<ItemExtendedData> {
             ItemSidedData sidedData = new ItemSidedData();
             sidedData.roundRobin = nbt.getBoolean(KEY_ROUND_ROBIN);
             sidedData.selfFeed = nbt.getBoolean(KEY_SELF_FEED);
-            sidedData.priority= nbt.getInt(KEY_PRIORITY);
+            sidedData.priority = nbt.getInt(KEY_PRIORITY);
+            sidedData.extractRate = nbt.getInt(KEY_EXTRACT_RATE);
             if (nbt.contains(KEY_ROTATING_INDEX)) {
                 sidedData.rotatingIndex= nbt.getInt(KEY_ROTATING_INDEX);
             }

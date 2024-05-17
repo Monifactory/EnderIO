@@ -42,14 +42,12 @@ public class ConduitSlot extends SlotItemHandler {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if (slotType == SlotType.UPGRADE_EXTRACT) {
-            return false;
-        }
-
         // TODO check slot type, fluid filter for fluid etc...
         return isVisible() && super.mayPlace(stack) && (
             stack.is(ConduitItems.BASIC_ITEM_FILTER.asItem()))
-            || stack.is(ConduitItems.BIG_ITEM_FILTER.asItem());
+            || stack.is(ConduitItems.BIG_ITEM_FILTER.asItem())
+            || stack.is(ConduitItems.SPEED_UPGRADE.asItem())
+            || stack.is(ConduitItems.SPEED_DOWNGRADE.asItem());
     }
 
     @Override
