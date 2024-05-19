@@ -40,14 +40,15 @@ public class ConduitSlot extends SlotItemHandler {
         return super.setBackground(atlas, sprite);
     }
 
+    //EnderIO Unofficial: Called from ConduitMenu to provide accurate Shift-Click mechanics
+    public int getMaxStackSizeItemAware(ItemStack stack) {
+        if(slotType != SlotType.UPGRADE_EXTRACT) return 1;
+        return stack.is(ConduitItems.SPEED_UPGRADE.asItem()) ? 15 : stack.is(ConduitItems.SPEED_DOWNGRADE.asItem()) ? 3 : 64;
+    }
+
     @Override
     public boolean mayPlace(ItemStack stack) {
-        // TODO check slot type, fluid filter for fluid etc...
-        return isVisible() && super.mayPlace(stack) && (
-            stack.is(ConduitItems.BASIC_ITEM_FILTER.asItem()))
-            || stack.is(ConduitItems.BIG_ITEM_FILTER.asItem())
-            || stack.is(ConduitItems.SPEED_UPGRADE.asItem())
-            || stack.is(ConduitItems.SPEED_DOWNGRADE.asItem());
+      return isVisible() && super.mayPlace(stack) && slotType.acceptsItem(stack.getItem());
     }
 
     @Override

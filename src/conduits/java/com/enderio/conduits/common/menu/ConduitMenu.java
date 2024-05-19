@@ -57,6 +57,89 @@ public class ConduitMenu extends SyncedMenu<ConduitBlockEntity> {
         addInventorySlots(23,113);
     }
 
+    // EnderIO Unofficial: Override parent method
+    @Override
+    protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+        boolean flag = false;
+        int i = reverseDirection ? endIndex - 1 : startIndex;
+        Slot slot1;
+        ItemStack itemstack;
+        if (stack.isStackable()) {
+            while(!stack.isEmpty()) {
+                if (reverseDirection) {
+                    if (i < startIndex) break;
+                } else if (i >= endIndex) break;
+
+                slot1 = this.slots.get(i);
+                itemstack = slot1.getItem();
+                if (!itemstack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemstack)) {
+                    int j = itemstack.getCount() + stack.getCount();
+                    // EnderIO Unofficial: Allow Stack-dependent maxStackSize in ConduitSlots
+                    int maxSize = Math.min(slot1 instanceof ConduitSlot cs ? cs.getMaxStackSizeItemAware(stack) : slot1.getMaxStackSize(), stack.getMaxStackSize());
+                    if (j <= maxSize) {
+                        stack.setCount(0);
+                        itemstack.setCount(j);
+                        slot1.setChanged();
+                        flag = true;
+                    } else if (itemstack.getCount() < maxSize) {
+                        stack.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot1.setChanged();
+                        flag = true;
+                    }
+                }
+
+                if (reverseDirection) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!stack.isEmpty()) {
+            if (reverseDirection) {
+                i = endIndex - 1;
+            } else {
+                i = startIndex;
+            }
+
+            while(true) {
+                if (reverseDirection) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                } else if (i >= endIndex) {
+                    break;
+                }
+
+                slot1 = this.slots.get(i);
+                itemstack = slot1.getItem();
+                if (itemstack.isEmpty() && slot1.mayPlace(stack)) {
+                    // EnderIO Unofficial: Allow Stack-dependent maxStackSize in ConduitSlots
+                    int slotMaxStackSize = slot1 instanceof ConduitSlot cs ? cs.getMaxStackSizeItemAware(stack) : slot1.getMaxStackSize();
+                    if (stack.getCount() > slotMaxStackSize) {
+                        slot1.setByPlayer(stack.split(slotMaxStackSize));
+                    } else {
+                        slot1.setByPlayer(stack.split(stack.getCount()));
+                    }
+
+                    slot1.setChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (reverseDirection) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        return flag;
+    }
+
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
