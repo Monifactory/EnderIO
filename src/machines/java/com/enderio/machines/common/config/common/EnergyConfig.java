@@ -113,7 +113,7 @@ public class EnergyConfig {
             builder.comment("Capacity for capacitor banks");
             BASIC_CAPACITOR_BANK_CAPACITY = builder.defineInRange("basic", 500_000  , 1, Integer.MAX_VALUE);
             ADVANCED_CAPACITOR_BANK_CAPACITY = builder.defineInRange("advanced",  2_000_000  , 1, Integer.MAX_VALUE);
-            VIBRANT_CAPACITOR_BANK_CAPACITY = builder.defineInRange("vibrant", 4_000_000, 1, Integer.MAX_VALUE);
+            VIBRANT_CAPACITOR_BANK_CAPACITY = builder.defineInRange("vibrant", 8_000_000, 1, Integer.MAX_VALUE);
         builder.pop();
 
         builder.push("wiredCharger");
