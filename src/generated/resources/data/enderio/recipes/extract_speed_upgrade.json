@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/redstone_alloy"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "T": {
+      "item": "minecraft:redstone_torch"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "IPI",
+    "ITI"
+  ],
+  "result": {
+    "item": "enderio:extract_speed_upgrade"
+  },
+  "show_notification": true
+}

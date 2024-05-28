@@ -66,6 +66,29 @@ public class ConduitRecipes extends RecipeProvider {
             .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(EIOItems.CONDUIT_BINDER))
             .save(pWriter);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ConduitItems.SPEED_UPGRADE)
+            .pattern("AAA")
+            .pattern("IPI")
+            .pattern("ITI")
+            .define('A', EIOTags.Items.INGOTS_REDSTONE_ALLOY)
+            .define('I', Items.IRON_INGOT)
+            .define('P', Items.PISTON)
+            .define('T', Items.REDSTONE_TORCH)
+            .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(EIOItems.CONDUIT_BINDER))
+            .save(pWriter);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ConduitItems.SPEED_DOWNGRADE)
+            .pattern("AAA")
+            .pattern("IPI")
+            .pattern("ITI")
+            .define('A', EIOTags.Items.INGOTS_REDSTONE_ALLOY)
+            .define('I', Items.IRON_INGOT)
+            .define('P', Items.SLIME_BALL)
+            .define('T', Items.STICK)
+            .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(EIOItems.CONDUIT_BINDER))
+            .save(pWriter);
+
+
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ConduitItems.PRESSURIZED_FLUID, 8)
             .pattern("BBB")
             .pattern("GGG")
